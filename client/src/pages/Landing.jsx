@@ -14,7 +14,7 @@ const cardStyle = {
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
-  transition: 'transform 0.25s, box-shadow 0.25s',cd
+  transition: 'transform 0.25s, box-shadow 0.25s',
   cursor: 'pointer',
   border: 'none',
   position: 'relative',
@@ -91,6 +91,9 @@ const Landing = () => {
         <div style={{ marginTop: 18, display: 'flex', justifyContent: 'center', gap: 16, flexWrap: 'wrap' }}>
           <Link to="/register" style={{ background: 'linear-gradient(90deg, #646cff 60%, #00b894 100%)', color: '#fff', padding: '0.9em 2.2em', borderRadius: 12, fontWeight: 700, textDecoration: 'none', fontSize: isMobile ? '1rem' : '1.15rem', boxShadow: '0 2px 12px #646cff33', letterSpacing: 1, transition: 'background 0.2s' }}>
             Join Now
+          </Link>
+          <Link to="/course/1" style={{ background: 'linear-gradient(90deg, #00b894 60%, #646cff 100%)', color: '#fff', padding: '0.9em 2.2em', borderRadius: 12, fontWeight: 700, textDecoration: 'none', fontSize: isMobile ? '1rem' : '1.15rem', boxShadow: '0 2px 12px #00b89433', letterSpacing: 1, transition: 'background 0.2s' }}>
+            View Sample Course
           </Link>
           <Link to="/login" style={{ background: 'transparent', color: '#646cff', border: '2px solid #646cff', padding: '0.9em 2.2em', borderRadius: 12, fontWeight: 700, textDecoration: 'none', fontSize: isMobile ? '1rem' : '1.15rem', letterSpacing: 1, transition: 'background 0.2s' }}>
             Login
