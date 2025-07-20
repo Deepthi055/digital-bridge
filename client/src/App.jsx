@@ -7,6 +7,7 @@ import ResumeBuilder from './pages/Toolkit/ResumeBuilder';
 import TimeManagement from './pages/Toolkit/TimeManagement';
 import AdminPanel from './pages/Dashboard/AdminPanel';
 import CourseDetails from './pages/CourseDetails';
+import MentorDashboard from './pages/Dashboard/MentorDashboard';
 
 function App() {
   return (
@@ -15,7 +16,7 @@ function App() {
                 <Route path="/" element={<Landing />} />
                 <Route path="/dashboard/student" element={<StudentDashboard />} />
                 <Route path="/dashboard/admin" element={<AdminPanel />} />
-
+                <Route path="/dashboard/mentor" element={<MentorDashboard />} />
                 <Route path="/course/:courseId" element={<CourseDetails />} />
                 <Route path="/dropout-toolkit" element={<DropoutToolkit />} />
                 <Route path="/dropout-toolkit/resume" element={<ResumeBuilder />} />
