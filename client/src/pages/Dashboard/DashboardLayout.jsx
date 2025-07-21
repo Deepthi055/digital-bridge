@@ -6,7 +6,7 @@ const sidebarLinks = [
   { icon: <FaAward />, label: 'Dashboard', path: '/dashboard/student' },
   { icon: <FaBook />, label: 'Enrolled Courses', path: '/dashboard/student?tab=Enrolled%20Courses' },
   { icon: <FaChalkboardTeacher />, label: 'Mentor Connect', path: '/mentor-connect' },
-  { icon: <FaLaptopCode />, label: 'Assignments / Tasks', path: '/dashboard/student/assignments' },
+  { icon: <FaLaptopCode />, label: 'Assignments / Tasks', path: '/dashboard/student?tab=Assignments%20%2F%20Tasks' },
   { icon: <FaCertificate />, label: 'Certificates', path: '/certificates' },
   { icon: <FaLaptopCode />, label: 'Suggested Courses', path: '/dashboard/student?tab=Suggested%20Courses' },
   { icon: <FaAward />, label: 'Achievements', path: '/achievements' },

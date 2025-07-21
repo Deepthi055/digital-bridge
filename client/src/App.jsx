@@ -6,9 +6,7 @@ import StudentDashboard from './pages/Dashboard/StudentDashboard';
 import AchievementsPage from './pages/Dashboard/AchievementsPage';
 import DashboardLayout from './pages/Dashboard/DashboardLayout';
 import DropoutToolkit from './pages/Toolkit/DropoutToolkit';
-import AssignmentTasksPage from './pages/Toolkit/AssignmentTasksPage';
 import ResumeBuilder from './pages/Toolkit/ResumeBuilder';
-import CertificatePage from './pages/CertificatePage';
 import TimeManagement from './pages/Toolkit/TimeManagement';
 import AdminPanel from './pages/Dashboard/AdminPanel';
 import CourseDetails from './pages/CourseDetails';
@@ -21,7 +19,6 @@ function App() {
                 <Route path="/" element={<Landing />} />
                 <Route element={<DashboardLayout />}>
                   <Route path="/dashboard/student" element={<StudentDashboard />} />
-                  <Route path="/dashboard/student/assignments" element={<AssignmentTasksPage />} />
                   <Route path="/achievements" element={<AchievementsPage />} />
                 </Route>
                 <Route path="/dashboard/admin" element={<AdminPanel />} />
@@ -30,7 +27,6 @@ function App() {
                 <Route path="/dropout-toolkit" element={<DropoutToolkit />} />
                 <Route path="/dropout-toolkit/resume" element={<ResumeBuilder />} />
                 <Route path="/dropout-toolkit/time-management" element={<TimeManagement />} />
-                <Route path="/certificates" element={<CertificatePage />} />
                 <Route path="/mentor-connect" element={<MentorConnect />} />
                 {/* Add more routes here as you build more pages */}
             </Routes>
