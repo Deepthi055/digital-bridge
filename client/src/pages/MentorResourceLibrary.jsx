@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FaBookOpen, FaSearch, FaFilePdf, FaVideo, FaLink, FaLightbulb, FaEye } from 'react-icons/fa'; // Added FaEye
+import { FaBookOpen, FaSearch, FaFilePdf, FaVideo, FaLink, FaLightbulb, FaEye } from 'react-icons/fa';
 
 const mockResources = [
   {
