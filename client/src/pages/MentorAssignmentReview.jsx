@@ -1,288 +1,379 @@
-// client/src/pages/MentorAssignmentReview.jsx
-
 import React, { useState } from 'react';
-import { FaGraduationCap, FaCheckCircle, FaHourglassHalf, FaTimesCircle, FaEye, FaEdit, FaSearch } from 'react-icons/fa';
-
-// Mock data for assignments
-const mockAssignments = [
-  {
-    id: 1,
-    menteeName: 'Alice Johnson',
-    course: 'Mathematics Basics',
-    assignmentTitle: 'Algebra Fundamentals Quiz',
-    submissionDate: '2024-07-20',
-    status: 'Pending Review',
-    grade: null,
-    feedback: null,
-  },
-  {
-    id: 2,
-    menteeName: 'Bob Smith',
-    course: 'Digital Marketing 101',
-    assignmentTitle: 'SEO Keyword Research Report',
-    submissionDate: '2024-07-19',
-    status: 'Reviewed',
-    grade: 'A-',
-    feedback: 'Good research, consider more long-tail keywords.',
-  },
-  {
-    id: 3,
-    menteeName: 'Charlie Brown',
-    course: 'English Communication',
-    assignmentTitle: 'Essay on Personal Branding',
-    submissionDate: '2024-07-18',
-    status: 'Graded',
-    grade: 'B+',
-    feedback: 'Well-structured, needs more persuasive language.',
-  },
-  {
-    id: 4,
-    menteeName: 'Diana Prince',
-    course: 'Mathematics Basics',
-    assignmentTitle: 'Geometry Problem Set 1',
-    submissionDate: '2024-07-21',
-    status: 'Pending Review',
-    grade: null,
-    feedback: null,
-  },
-  {
-    id: 5,
-    menteeName: 'Eve Adams',
-    course: 'Digital Marketing 101',
-    assignmentTitle: 'Social Media Campaign Plan',
-    submissionDate: '2024-07-15',
-    status: 'Pending Review',
-    grade: null,
-    feedback: null,
-  },
-  {
-    id: 6,
-    menteeName: 'Frank White',
-    course: 'Introduction to Python Programming',
-    assignmentTitle: 'Python Functions Exercise',
-    submissionDate: '2024-07-10',
-    status: 'Graded',
-    grade: 'A',
-    feedback: 'Excellent work, clear and concise code.',
-  },
-];
 
 const MentorAssignmentReview = () => {
-  const [assignments, setAssignments] = useState(mockAssignments);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterStatus, setFilterStatus] = useState('All');
-  const [filterCourse, setFilterCourse] = useState('All');
+  const initialAssignments = [
+    {
+      id: 1,
+      title: 'Algebra Fundamentals Quiz',
+      course: 'Mathematics Basics',
+      deadline: '2024-07-25',
+      description: 'Quiz covering basic algebra concepts: variables, equations, and inequalities. This assessment determines foundational understanding.',
+      submissions: [
+        { menteeId: 'alice', menteeName: 'Alice Johnson', submittedDate: '2024-07-20', status: 'Pending Review', submissionContent: 'Alice submitted her answers in a PDF document. Answers for Q1: 5, Q2: x=7, Q3: y<10...', grade: '', feedback: '', submissionPdfUrl: '/sample-pdfs/alice_algebra.pdf' },
+        { menteeId: 'bob', menteeName: 'Bob Smith', submittedDate: '2024-07-21', status: 'Submitted', submissionContent: 'Bob submitted a picture of his work.', grade: '', feedback: '', submissionPdfUrl: '/sample-pdfs/bob_algebra.pdf' },
+        { menteeId: 'charlie', menteeName: 'Charlie Brown', submittedDate: '2024-07-22', status: 'Reviewed', submissionContent: 'Charlie submitted a Word document.', grade: 'C+', feedback: 'Needs more practice with inequalities.', submissionPdfUrl: '/sample-pdfs/charlie_algebra.pdf' },
+      ],
+    },
+    {
+      id: 2,
+      title: 'SEO Keyword Research Report',
+      course: 'Digital Marketing 101',
+      deadline: '2024-07-30',
+      description: 'Report on keyword research for a niche market. Identify primary, secondary, and long-tail keywords with search volume and competition analysis.',
+      submissions: [
+        { menteeId: 'alice', menteeName: 'Alice Johnson', submittedDate: '2024-07-23', status: 'Submitted', submissionContent: 'Alice submitted a Google Docs link.', grade: '', feedback: '', submissionPdfUrl: '/sample-pdfs/alice_seo.pdf' },
+        { menteeId: 'diana', menteeName: 'Diana Prince', submittedDate: '2024-07-24', status: 'Reviewed', submissionContent: 'Diana submitted a comprehensive report.', grade: 'A-', feedback: 'Excellent depth in competitor analysis!', submissionPdfUrl: '/sample-pdfs/diana_seo.pdf' },
+      ],
+    },
+    {
+      id: 3,
+      title: 'Essay on Personal Branding',
+      course: 'English Communication',
+      deadline: '2024-08-05',
+      description: 'Write a 1000-word essay on the importance of personal branding in the digital age. Include strategies for building a strong online presence.',
+      submissions: [
+        { menteeId: 'eve', menteeName: 'Eve Adams', submittedDate: '2024-07-22', status: 'Pending Review', submissionContent: 'Eve uploaded her essay as a PDF.', grade: '', feedback: '', submissionPdfUrl: '/sample-pdfs/eve_essay.pdf' },
+      ],
+    },
+    {
+      id: 4,
+      title: 'Geometry Problem Set 1',
+      course: 'Mathematics Basics',
+      deadline: '2024-07-28',
+      description: 'Problem set covering basic geometric shapes, angles, and area calculations. Show all steps for full credit.',
+      submissions: [
+        { menteeId: 'diana', menteeName: 'Diana Prince', submittedDate: '2024-07-21', status: 'Pending Review', submissionContent: 'Diana uploaded scanned handwritten solutions. Problems 1-5 seem correctly calculated, but problem 6 has an error in area formula.', grade: '', feedback: '', submissionPdfUrl: '/sample-pdfs/diana_geometry.pdf' },
+      ],
+    },
+  ];
 
-  const getStatusIcon = (status) => {
-    switch (status) {
-      case 'Pending Review':
-        return <FaHourglassHalf color="#ffaa00" />; // Orange
-      case 'Reviewed':
-        return <FaCheckCircle color="#646cff" />; // Blue
-      case 'Graded':
-        return <FaGraduationCap color="#00b894" />; // Green
-      default:
-        return null;
+  const [assignments, setAssignments] = useState(initialAssignments);
+  const [selectedAssignmentForDetails, setSelectedAssignmentForDetails] = useState(null);
+  const [editingSubmissionFeedback, setEditingSubmissionFeedback] = useState(null);
+  const [currentFeedback, setCurrentFeedback] = useState('');
+  const [currentGrade, setCurrentGrade] = useState('');
+
+  const isMobile = window.innerWidth < 768;
+
+  const handleViewDetailsClick = (assignment) => {
+    setSelectedAssignmentForDetails(assignment);
+    setEditingSubmissionFeedback(null);
+  };
+
+  const handleCloseAssignmentDetails = () => {
+    setSelectedAssignmentForDetails(null);
+    setEditingSubmissionFeedback(null);
+  };
+
+  const handleProvideFeedback = (assignmentId, menteeId, existingGrade, existingFeedback) => {
+    setEditingSubmissionFeedback({ assignmentId, menteeId });
+    setCurrentGrade(existingGrade || '');
+    setCurrentFeedback(existingFeedback || '');
+  };
+
+  const handleSaveSubmissionFeedback = () => {
+    setAssignments(prevAssignments => {
+      return prevAssignments.map(assignment => {
+        if (assignment.id === editingSubmissionFeedback.assignmentId) {
+          return {
+            ...assignment,
+            submissions: assignment.submissions.map(submission => {
+              if (submission.menteeId === editingSubmissionFeedback.menteeId) {
+                return {
+                  ...submission,
+                  grade: currentGrade,
+                  feedback: currentFeedback,
+                  status: 'Reviewed',
+                };
+              }
+              return submission;
+            }),
+          };
+        }
+        return assignment;
+      });
+    });
+    // After saving, update the selectedAssignmentForDetails to reflect changes immediately
+    if (selectedAssignmentForDetails && selectedAssignmentForDetails.id === editingSubmissionFeedback.assignmentId) {
+        // Find the updated assignment from the new assignments state
+        const updatedAssignment = initialAssignments.find(a => a.id === editingSubmissionFeedback.assignmentId);
+        // Deep copy the updated assignment and its submissions to ensure React detects state change
+        const updatedAssignmentDeepCopy = {
+            ...updatedAssignment,
+            submissions: updatedAssignment.submissions.map(sub => {
+                if (sub.menteeId === editingSubmissionFeedback.menteeId) {
+                    return { ...sub, grade: currentGrade, feedback: currentFeedback, status: 'Reviewed' };
+                }
+                return { ...sub };
+            })
+        };
+        setSelectedAssignmentForDetails(updatedAssignmentDeepCopy);
+    }
+    setEditingSubmissionFeedback(null);
+    setCurrentGrade('');
+    setCurrentFeedback('');
+  };
+
+  const handleCancelSubmissionFeedback = () => {
+    setEditingSubmissionFeedback(null);
+    setCurrentGrade('');
+    setCurrentFeedback('');
+  };
+
+  // Handler for viewing PDF submission
+  const handleViewPdfSubmission = (pdfUrl) => {
+    if (pdfUrl) {
+      window.open(pdfUrl, '_blank'); // Opens the PDF in a new tab
+    } else {
+      alert('No PDF submission available for this assignment.');
     }
   };
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'Pending Review':
-        return '#ffaa00';
-      case 'Reviewed':
-        return '#646cff';
-      case 'Graded':
-        return '#00b894';
-      default:
-        return '#888';
-    }
+  // Base style for assignment cards (for the main list)
+  const assignmentCardBaseStyle = {
+    background: '#f8f8f8',
+    borderRadius: 12,
+    padding: '15px',
+    boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+    border: '1px solid #eee',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    textAlign: 'left',
+    transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
+    minHeight: '200px', // Consistent height for list cards
   };
 
-  const filteredAssignments = assignments
-    .filter(assignment =>
-      assignment.menteeName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      assignment.course.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      assignment.assignmentTitle.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-    .filter(assignment => filterStatus === 'All' || assignment.status === filterStatus)
-    .filter(assignment => filterCourse === 'All' || assignment.course === filterCourse);
-
-  const allStatuses = ['All', ...new Set(mockAssignments.map(a => a.status))];
-  const allCourses = ['All', ...new Set(mockAssignments.map(a => a.course))];
-
-  const handleViewSubmission = (id) => {
-    alert(`Viewing submission for assignment ID: ${id}`);
-    // In a real app, this would open a modal or new page with the submission
+  const assignmentCardHoverStyle = {
+    transform: 'translateY(-5px)',
+    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+    cursor: 'pointer',
   };
 
-  const handleProvideFeedback = (id) => {
-    alert(`Providing feedback for assignment ID: ${id}`);
-    // In a real app, this would open a form to input grade and feedback
-  };
+  if (selectedAssignmentForDetails) {
+    // --- Dedicated Assignment Details "Page" ---
+    return (
+      <div style={{ padding: '20px', background: '#fff', borderRadius: 16, boxShadow: '0 2px 12px rgba(0,184,148,0.1)' }}>
+        <h2 style={{ color: '#00b894', fontWeight: 800, fontSize: isMobile ? '1.2rem' : '1.5rem', marginBottom: 20, textAlign: 'center' }}>
+          {selectedAssignmentForDetails.title} Details
+        </h2>
+        <div style={{ background: '#f8f8f8', borderRadius: 12, padding: '20px', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', marginBottom: '20px' }}>
+          <p style={{ color: '#555', fontSize: '1.1em', marginBottom: '8px' }}>Course: {selectedAssignmentForDetails.course}</p>
+          <p style={{ color: '#555', fontSize: '1.1em', marginBottom: '8px' }}>Description: {selectedAssignmentForDetails.description}</p>
+          <p style={{ color: '#d63031', fontWeight: 'bold', fontSize: '1.1em', marginBottom: '15px' }}>Deadline: {selectedAssignmentForDetails.deadline}</p>
+          <button
+            onClick={handleCloseAssignmentDetails}
+            style={{
+              background: '#646cff',
+              color: '#fff',
+              border: 'none',
+              borderRadius: 6,
+              padding: '8px 15px',
+              fontSize: 14,
+              fontWeight: 600,
+              cursor: 'pointer',
+              marginBottom: '20px',
+            }}
+          >
+            Back to Assignments
+          </button>
+        </div>
 
+        <h3 style={{ color: '#00b894', marginBottom: '15px' }}>Submissions ({selectedAssignmentForDetails.submissions.length})</h3>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '20px' }}>
+          {selectedAssignmentForDetails.submissions.map(submission => (
+            <div
+              key={submission.menteeId}
+              style={{
+                background: '#fff',
+                borderRadius: 12,
+                padding: '15px',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+                border: '1px solid #eee',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'flex-start',
+                textAlign: 'left',
+                minHeight: '220px', // Min height for submission cards
+              }}
+            >
+              {editingSubmissionFeedback &&
+              editingSubmissionFeedback.assignmentId === selectedAssignmentForDetails.id &&
+              editingSubmissionFeedback.menteeId === submission.menteeId ? (
+                // Feedback Edit Form for this specific submission
+                <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  <h4 style={{ color: '#333', marginBottom: '5px' }}>Feedback for {submission.menteeName}</h4>
+                  <label style={{ textAlign: 'left', color: '#555', fontSize: '0.9em' }}>Grade:</label>
+                  <input
+                    type="text"
+                    value={currentGrade}
+                    onChange={(e) => setCurrentGrade(e.target.value)}
+                    style={{ padding: '8px', borderRadius: '5px', border: '1px solid #ccc', width: 'calc(100% - 18px)' }}
+                  />
+                  <label style={{ textAlign: 'left', color: '#555', fontSize: '0.9em' }}>Feedback:</label>
+                  <textarea
+                    value={currentFeedback}
+                    onChange={(e) => setCurrentFeedback(e.target.value)}
+                    rows="4"
+                    style={{ padding: '8px', borderRadius: '5px', border: '1px solid #ccc', width: 'calc(100% - 18px)' }}
+                  ></textarea>
+                  <div style={{ display: 'flex', justifyContent: 'space-around', marginTop: '10px', gap: '10px' }}>
+                    <button
+                      onClick={handleSaveSubmissionFeedback}
+                      style={{
+                        background: '#00b894',
+                        color: '#fff',
+                        border: 'none',
+                        borderRadius: 6,
+                        padding: '8px 15px',
+                        fontSize: 14,
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                      }}
+                    >
+                      Send {/* Changed "Save" to "Send" here */}
+                    </button>
+                    <button
+                      onClick={handleCancelSubmissionFeedback}
+                      style={{
+                        background: '#e0e0e0',
+                        color: '#555',
+                        border: 'none',
+                        borderRadius: 6,
+                        padding: '8px 15px',
+                        fontSize: 14,
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                      }}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                // Submission Details Display
+                <>
+                  <h4 style={{ color: '#333', marginBottom: '5px' }}>{submission.menteeName}</h4>
+                  <p style={{ color: '#666', fontSize: '0.9em', marginBottom: '3px' }}>Status: <span style={{ fontWeight: 'bold', color: submission.status === 'Pending Review' ? '#d63031' : '#00b894' }}>{submission.status}</span></p>
+                  <p style={{ color: '#666', fontSize: '0.9em', marginBottom: '3px' }}>Submitted: {submission.submittedDate}</p>
+                  <p style={{ color: '#666', fontSize: '0.9em', marginBottom: '8px' }}>Content: {submission.submissionContent.substring(0, 100)}...</p>
+                  {submission.grade && <p style={{ color: '#555', fontSize: '0.9em', marginBottom: '3px' }}>Grade: {submission.grade}</p>}
+                  {submission.feedback && <p style={{ color: '#555', fontSize: '0.9em', marginBottom: '8px' }}>Feedback: {submission.feedback}</p>}
+
+                  <div style={{ display: 'flex', justifyContent: 'space-around', width: '100%', marginTop: 'auto', gap: '10px' }}>
+                    <button
+                      onClick={() => handleViewPdfSubmission(submission.submissionPdfUrl)} // Call the new handler
+                      style={{
+                        flex: 1,
+                        background: '#646cff',
+                        color: '#fff',
+                        border: 'none',
+                        borderRadius: 6,
+                        padding: '8px 12px',
+                        fontSize: 14,
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                      }}
+                    >
+                      View Submission
+                    </button>
+                    <button
+                      onClick={() => handleProvideFeedback(selectedAssignmentForDetails.id, submission.menteeId, submission.grade, submission.feedback)}
+                      style={{
+                        flex: 1,
+                        background: '#00b894',
+                        color: '#fff',
+                        border: 'none',
+                        borderRadius: 6,
+                        padding: '8px 12px',
+                        fontSize: 14,
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                      }}
+                    >
+                      {submission.status === 'Reviewed' ? 'Edit Feedback' : 'Give Feedback'}
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // --- Main Assignment List View ---
   return (
-    <div style={{ padding: '2rem', background: '#f8fafc', borderRadius: '18px', boxShadow: '0 4px 20px rgba(0,0,0,0.05)' }}>
-      <h1 style={{ color: '#00b894', marginBottom: '1.5rem', fontSize: '2rem', fontWeight: '800' }}>
-        <FaGraduationCap style={{ marginRight: '10px' }} />Assignment Review
-      </h1>
+    <div style={{ padding: '20px', background: '#fff', borderRadius: 16, boxShadow: '0 2px 12px rgba(0,184,148,0.1)' }}>
+      <h2 style={{ color: '#00b894', fontWeight: 800, fontSize: isMobile ? '1.2rem' : '1.5rem', marginBottom: 20, textAlign: 'center' }}>Assignment Review</h2>
 
-      {/* Filter and Search Controls */}
-      <div style={{ marginBottom: '1.5rem', display: 'flex', flexWrap: 'wrap', gap: '15px', alignItems: 'center' }}>
+      <div style={{ marginBottom: '20px', display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center' }}>
         <input
           type="text"
           placeholder="Search by mentee, course, or assignment..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          style={{
-            flex: '1 1 280px',
-            padding: '10px 15px',
-            borderRadius: '8px',
-            border: '1px solid #ddd',
-            fontSize: '1rem',
-          }}
+          style={{ padding: '8px', borderRadius: '8px', border: '1px solid #ddd', flex: isMobile ? '100%' : '1' }}
         />
-
-        <select
-          value={filterStatus}
-          onChange={(e) => setFilterStatus(e.target.value)}
-          style={{
-            flex: '0 0 auto',
-            padding: '10px 15px',
-            borderRadius: '8px',
-            border: '1px solid #ddd',
-            fontSize: '1rem',
-            minWidth: '150px',
-          }}
-        >
-          {allStatuses.map(status => (
-            <option key={status} value={status}>{status}</option>
-          ))}
+        <select style={{ padding: '8px', borderRadius: '8px', border: '1px solid #ddd' }}>
+          <option>All</option>
+          <option>Pending Review</option>
+          <option>Reviewed</option>
+          <option>Graded</option>
         </select>
-
-        <select
-          value={filterCourse}
-          onChange={(e) => setFilterCourse(e.target.value)}
-          style={{
-            flex: '0 0 auto',
-            padding: '10px 15px',
-            borderRadius: '8px',
-            border: '1px solid #ddd',
-            fontSize: '1rem',
-            minWidth: '180px',
-          }}
-        >
-          {allCourses.map(course => (
-            <option key={course} value={course}>{course}</option>
-          ))}
+        <select style={{ padding: '8px', borderRadius: '8px', border: '1px solid #ddd' }}>
+          <option>All</option>
+          <option>Mathematics Basics</option>
+          <option>Digital Marketing 101</option>
+          <option>English Communication</option>
         </select>
       </div>
 
-      {/* Assignments List */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: '25px' }}>
-        {filteredAssignments.length === 0 ? (
-          <div style={{ textAlign: 'center', gridColumn: '1 / -1', color: '#666', fontSize: '1.1rem', padding: '20px' }}>
-            No assignments found matching your criteria.
-          </div>
-        ) : (
-          filteredAssignments.map(assignment => (
-            <div
-              key={assignment.id}
-              style={{
-                background: '#ffffff',
-                borderRadius: '15px',
-                boxShadow: '0 2px 10px rgba(0,0,0,0.08)',
-                padding: '20px',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                borderLeft: `5px solid ${getStatusColor(assignment.status)}`,
-                transition: 'transform 0.2s ease-in-out',
-                cursor: 'pointer',
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-5px)'}
-              onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-            >
-              <div>
-                <h3 style={{ margin: '0 0 8px 0', color: '#333', fontSize: '1.3rem' }}>{assignment.assignmentTitle}</h3>
-                <p style={{ margin: '0 0 5px 0', color: '#555', fontSize: '0.95rem' }}>
-                  <span style={{ fontWeight: 'bold' }}>Mentee:</span> {assignment.menteeName}
-                </p>
-                <p style={{ margin: '0 0 10px 0', color: '#555', fontSize: '0.95rem' }}>
-                  <span style={{ fontWeight: 'bold' }}>Course:</span> {assignment.course}
-                </p>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.9rem', color: '#666', marginBottom: '10px' }}>
-                  <span style={{ fontWeight: 'bold' }}>Status:</span>
-                  <span style={{ color: getStatusColor(assignment.status), fontWeight: '600' }}>
-                    {getStatusIcon(assignment.status)} {assignment.status}
-                  </span>
-                </div>
-                {assignment.grade && (
-                  <p style={{ margin: '0 0 5px 0', color: '#555', fontSize: '0.9rem' }}>
-                    <span style={{ fontWeight: 'bold' }}>Grade:</span> {assignment.grade}
-                  </p>
-                )}
-                {assignment.feedback && (
-                  <p style={{ margin: '0 0 5px 0', color: '#555', fontSize: '0.9rem', fontStyle: 'italic' }}>
-                    "{assignment.feedback}"
-                  </p>
-                )}
-                <p style={{ margin: '0', color: '#888', fontSize: '0.85rem' }}>
-                  Submitted: {assignment.submissionDate}
-                </p>
-              </div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '20px' }}>
+        {assignments.map(assignment => (
+          <div
+            key={assignment.id}
+            style={assignmentCardBaseStyle}
+            onMouseEnter={(e) => {
+              // Only apply hover if not viewing/editing any assignment
+              if (selectedAssignmentForDetails === null && editingSubmissionFeedback === null) {
+                e.currentTarget.style.transform = assignmentCardHoverStyle.transform;
+                e.currentTarget.style.boxShadow = assignmentCardHoverStyle.boxShadow;
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (selectedAssignmentForDetails === null && editingSubmissionFeedback === null) {
+                e.currentTarget.style.transform = 'none';
+                e.currentTarget.style.boxShadow = assignmentCardBaseStyle.boxShadow;
+              }
+            }}
+          >
+            <h3 style={{ color: '#333', fontSize: '1.1rem', marginBottom: '5px', alignSelf: 'stretch' }}>{assignment.title}</h3>
+            <p style={{ color: '#666', fontSize: '0.9rem', marginBottom: '3px', alignSelf: 'stretch' }}>Course: {assignment.course}</p>
+            <p style={{ color: '#d63031', fontWeight: 'bold', fontSize: '0.9rem', marginBottom: '10px', alignSelf: 'stretch' }}>Deadline: {assignment.deadline}</p>
+            <p style={{ color: '#888', fontSize: '0.8rem', marginBottom: '15px', alignSelf: 'stretch' }}>Submissions: {assignment.submissions.length}</p>
 
-              <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
-                <button
-                  onClick={() => handleViewSubmission(assignment.id)}
-                  style={{
-                    padding: '8px 15px',
-                    background: '#646cff', // Blue for view
-                    color: '#fff',
-                    border: 'none',
-                    borderRadius: '20px',
-                    fontSize: '0.9rem',
-                    fontWeight: '600',
-                    cursor: 'pointer',
-                    boxShadow: '0 2px 8px rgba(100,108,255,0.2)',
-                    transition: 'all 0.2s ease',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '5px',
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.boxShadow = '0 4px 12px rgba(100,108,255,0.4)'}
-                  onMouseLeave={(e) => e.currentTarget.style.boxShadow = '0 2px 8px rgba(100,108,255,0.2)'}
-                >
-                  <FaEye /> View
-                </button>
-                {assignment.status !== 'Graded' && (
-                  <button
-                    onClick={() => handleProvideFeedback(assignment.id)}
-                    style={{
-                      padding: '8px 15px',
-                      background: 'linear-gradient(45deg, #00b894, #00997e)', // Green gradient for feedback
-                      color: '#fff',
-                      border: 'none',
-                      borderRadius: '20px',
-                      fontSize: '0.9rem',
-                      fontWeight: '600',
-                      cursor: 'pointer',
-                      boxShadow: '0 2px 8px rgba(0,184,148,0.2)',
-                      transition: 'all 0.2s ease',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '5px',
-                    }}
-                    onMouseEnter={(e) => e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,184,148,0.4)'}
-                    onMouseLeave={(e) => e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,184,148,0.2)'}
-                  >
-                    <FaEdit /> Feedback
-                  </button>
-                )}
-              </div>
+            <div style={{ display: 'flex', justifyContent: 'space-around', width: '100%', marginTop: 'auto', gap: '10px' }}>
+              <button
+                onClick={() => handleViewDetailsClick(assignment)}
+                style={{
+                  flex: 1,
+                  background: '#646cff',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: 6,
+                  padding: '8px 12px',
+                  fontSize: 14,
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  boxShadow: '0 2px 8px rgba(100,108,255,0.2)',
+                  transition: 'background 0.3s ease',
+                }}
+              >
+                View Details
+              </button>
             </div>
-          ))
-        )}
+          </div>
+        ))}
       </div>
     </div>
   );

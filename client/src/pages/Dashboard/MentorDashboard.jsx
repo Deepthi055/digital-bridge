@@ -1,14 +1,53 @@
 import React from "react";
 import { FaChalkboardTeacher, FaLaptopCode, FaUserGraduate, FaBookOpen, FaEnvelope, FaCog, FaSignOutAlt, FaTasks, FaUsers, FaChartLine, FaRegLightbulb, FaGraduationCap, FaLifeRing, FaPalette } from "react-icons/fa";
 
-// Import your actual components from the sibling directory (pages)
-// Adjusted paths because MentorDashboard is now in 'pages/dashboard'
-import MyMentees from "../MyMentees"; // Corrected from `../pages/MyMentees` if that was the mistake
-import MentorCourseManagement from "../MentorCourseManagement"; // Corrected
-import MentorAssignmentReview from "../MentorAssignmentReview"; // Corrected
-import MentorResourceLibrary from "../MentorResourceLibrary"; // Corrected
-import MentorSettings from "../MentorSettings"; // Corrected
-import MentorHelpAndSupport from "../MentorHelpAndSupport"; // Corrected
+// Import all 'page' components from src/pages directly
+import MyMentees from "../MyMentees";
+import MentorCourseManagement from "../MentorCourseManagement";
+import MentorAssignmentReview from "../MentorAssignmentReview";
+import MentorResourceLibrary from "../MentorResourceLibrary";
+import MentorSettings from "../MentorSettings";
+import MentorHelpAndSupport from "../MentorHelpAndSupport";
+import MentorCourseDetails from "../MentorCourseDetails";
+
+// Local component definition for SidebarLink
+// This component is now part of MentorDashboard.jsx's scope.
+const SidebarLink = ({ icon, label, active, onClick, isMobile }) => {
+  const linkStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 12,
+    padding: isMobile ? '8px 10px' : '12px 15px',
+    margin: isMobile ? '5px' : '10px 0',
+    borderRadius: 8,
+    cursor: 'pointer',
+    backgroundColor: active ? 'rgba(255,255,255,0.25)' : 'transparent',
+    fontWeight: active ? 700 : 500,
+    transition: 'background-color 0.2s, font-weight 0.2s',
+    color: '#fff',
+    fontSize: isMobile ? 14 : 16,
+    whiteSpace: 'nowrap',
+  };
+
+  const hoverStyle = active
+    ? {} // No change on hover if active
+    : { backgroundColor: 'rgba(255,255,255,0.15)' };
+
+  const [isHovered, setIsHovered] = React.useState(false);
+
+  return (
+    <div
+      style={{ ...linkStyle, ...(isHovered ? hoverStyle : {}) }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onClick={onClick}
+    >
+      <span style={{ fontSize: isMobile ? 18 : 20, display: 'flex', alignItems: 'center' }}>{icon}</span>
+      {!isMobile && label}
+    </div>
+  );
+};
+
 
 // Mock data for a mentor's view (These are used in the Dashboard overview)
 const mockMentoredCourses = [
@@ -18,7 +57,13 @@ const mockMentoredCourses = [
     mentees: 12,
     completedMentees: 8,
     icon: <FaChalkboardTeacher size={32} color="#00b894" />,
-    status: 'active'
+    status: 'active',
+    description: 'Comprehensive course covering fundamental mathematical concepts from algebra to geometry, designed to build a strong foundation for advanced studies. Includes interactive lessons, practice problems, and quizzes.',
+    assignments: [
+      { id: 'math101-01', title: 'Algebra Fundamentals', dueDate: '2025-08-15', status: 'pending' },
+      { id: 'math101-02', title: 'Geometry Basics', dueDate: '2025-09-01', status: 'pending' },
+      { id: 'math101-03', title: 'Calculus Introduction', dueDate: '2025-09-20', status: 'completed' },
+    ]
   },
   {
     id: 2,
@@ -26,7 +71,12 @@ const mockMentoredCourses = [
     mentees: 10,
     completedMentees: 2,
     icon: <FaLaptopCode size={32} color="#00b894" />,
-    status: 'active'
+    status: 'active',
+    description: 'An introductory guide to digital marketing strategies, SEO, social media campaigns, and email marketing. Learn to create effective online presence and drive engagement.',
+    assignments: [
+      { id: 'dm101-01', title: 'SEO Keyword Research', dueDate: '2025-08-20', status: 'pending' },
+      { id: 'dm101-02', title: 'Social Media Campaign Plan', dueDate: '2025-09-10', status: 'pending' },
+    ]
   },
   {
     id: 3,
@@ -34,37 +84,72 @@ const mockMentoredCourses = [
     mentees: 15,
     completedMentees: 15,
     icon: <FaBookOpen size={30} color="#00b894" />,
-    status: 'completed'
+    status: 'completed',
+    description: 'Improve your spoken and written English skills for professional and personal growth. Focuses on grammar, vocabulary, public speaking, and effective writing techniques.',
+    assignments: [
+      { id: 'eng101-01', title: 'Essay Writing Practice', dueDate: '2025-07-01', status: 'completed' },
+      { id: 'eng101-02', title: 'Oral Presentation Prep', dueDate: '2025-07-10', status: 'completed' },
+    ]
   },
+  // --- NEW COURSES ADDED BELOW ---
+  {
+    id: 4,
+    title: 'Introduction to Programming',
+    mentees: 8,
+    completedMentees: 3,
+    icon: <FaLaptopCode size={32} color="#00b894" />,
+    status: 'active',
+    description: 'A beginner-friendly course covering fundamental programming concepts using Python. Includes basic syntax, data structures, and algorithmic thinking.',
+    assignments: [
+      { id: 'prog101-01', title: 'Python Basics', dueDate: '2025-09-05', status: 'pending' },
+      { id: 'prog101-02', title: 'Functions and Loops', dueDate: '2025-09-25', status: 'pending' },
+    ]
+  },
+  {
+    id: 5,
+    title: 'Graphic Design Fundamentals',
+    mentees: 7,
+    completedMentees: 7,
+    icon: <FaPalette size={30} color="#00b894" />,
+    status: 'completed',
+    description: 'Explore the principles of graphic design, including color theory, typography, and layout. Hands-on projects using popular design software.',
+    assignments: [
+      { id: 'gd101-01', title: 'Logo Design Project', dueDate: '2025-06-15', status: 'completed' },
+      { id: 'gd101-02', title: 'Poster Design', dueDate: '2025-07-01', status: 'completed' },
+    ]
+  },
+  // --- END NEW COURSES ---
 ];
 
 const recommendedResources = [
-  { title: 'Advanced Mentoring Techniques', icon: <FaRegLightbulb size={32} color="#00b894" /> },
-  { title: 'Curriculum Development Guide', icon: <FaBookOpen size={32} color="#00b894" /> },
+  { icon: <FaRegLightbulb size={24} color="#646cff" />, title: 'Advanced Mentoring Techniques Guide', content: 'This guide provides in-depth strategies for fostering mentee growth, including active listening, constructive feedback, and goal-setting methodologies. Focus on building strong mentor-mentee relationships.', link: '#advanced-mentoring-guide' },
+  { icon: <FaGraduationCap size={24} color="#646cff" />, title: 'New Course Curriculum Updates', content: 'Stay informed about the latest changes and additions to course content. This includes new modules, updated readings, and revised assessment criteria to ensure your mentoring aligns with current standards.', link: '#course-updates' },
+  { icon: <FaBookOpen size={24} color="#646cff" />, title: 'Interactive Lesson Planning Kit', content: 'A toolkit designed to help you create engaging and interactive lesson plans. Includes templates, activity ideas, and best practices for delivering effective learning experiences to your mentees.', link: '#lesson-planning-kit' },
+  { icon: <FaPalette size={24} color="#646cff" />, title: 'Feedback Frameworks for Mentees', content: 'Learn various structured approaches to providing impactful feedback. This resource covers techniques for delivering positive, constructive, and actionable feedback that encourages mentee development.', link: '#feedback-frameworks' },
 ];
 
+
+// Base style for cards
 const cardBase = {
-  width: 250,
-  minWidth: 250,
-  maxWidth: 250,
-  minHeight: 230,
+  width: 280,
+  minWidth: 280,
+  maxWidth: 280,
+  minHeight: 250,
   background: 'rgba(255,255,255,0.9)',
   borderRadius: 18,
+  boxShadow: '0 4px 18px rgba(0,0,0,0.08)',
   padding: '1.5rem 1.2rem',
-  boxShadow: '0 4px 18px rgba(0,184,148,0.15)',
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
   justifyContent: 'space-between',
-  marginBottom: 8,
-  transition: 'transform 0.22s, box-shadow 0.22s, background 0.22s, border 0.22s',
+  marginBottom: 20,
+  transition: 'transform 0.22s, box-shadow 0.22s, border 0.22s, background 0.22s',
   cursor: 'pointer',
-  border: '2px solid transparent',
-  position: 'relative',
-  overflow: 'hidden',
+  border: '2px solid transparent', // Add a transparent border initially
 };
 
-// Simple hook for responsiveness
+// Custom hook for responsive design
 const useResponsive = () => {
   const [isMobile, setIsMobile] = React.useState(window.innerWidth < 768);
 
@@ -84,6 +169,14 @@ const MentorDashboard = () => {
   const [hovered, setHovered] = React.useState(null);
   const mentorName = 'Dr. Anya Sharma';
   const isMobile = useResponsive();
+
+  // State for course details
+  const [selectedCourseForDetails, setSelectedCourseForDetails] = React.useState(null);
+
+  // States for displaying resource details directly within MentorDashboard
+  const [showResourceDetails, setShowResourceDetails] = React.useState(false);
+  const [currentResourceDetails, setCurrentResourceDetails] = React.useState(null);
+
 
   // Calculate dynamic data for mentor overview
   const totalCourses = mockMentoredCourses.length;
@@ -105,8 +198,37 @@ const MentorDashboard = () => {
   // State to manage the active content view
   const [activeContent, setActiveContent] = React.useState('Dashboard'); // Default to Dashboard
 
+  // Function to handle showing course details
+  const handleViewCourseDetails = (course) => {
+    setSelectedCourseForDetails(course);
+    setActiveContent('Course Details'); // Set a new "active content" state for details view
+  };
+
+  // Function to go back from course details
+  const handleBackToDashboard = () => {
+    setSelectedCourseForDetails(null);
+    setActiveContent('Dashboard');
+  };
+
+  // Function to handle showing resource details (inline)
+  const handleShowResourceDetails = (resource) => {
+    setCurrentResourceDetails(resource);
+    setShowResourceDetails(true);
+  };
+
+  // Function to close resource details (inline)
+  const handleCloseResourceDetails = () => {
+    setShowResourceDetails(false);
+    setCurrentResourceDetails(null);
+  };
+
   // Function to render the correct content based on activeContent state
   const renderContent = () => {
+    // Conditional rendering for MentorCourseDetails
+    if (activeContent === 'Course Details' && selectedCourseForDetails) {
+      return <MentorCourseDetails course={selectedCourseForDetails} onBack={handleBackToDashboard} />;
+    }
+
     switch (activeContent) {
       case 'Dashboard':
         return (
@@ -154,7 +276,7 @@ const MentorDashboard = () => {
               </div>
             </div>
 
-            {/* Mentored Courses Section */}
+            {/* My Mentored Courses Section */}
             <div style={{ background: '#fff', borderRadius: 16, boxShadow: '0 2px 12px rgba(0,184,148,0.1)', padding: '1.5rem 1.2rem', marginBottom: 28 }}>
               <h2 style={{ color: '#00b894', fontWeight: 800, fontSize: isMobile ? '1.1rem' : '1.3rem', marginBottom: 18, letterSpacing: 1 }}>My Mentored Courses</h2>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 28, justifyContent: 'center', marginBottom: 0 }}>
@@ -184,7 +306,7 @@ const MentorDashboard = () => {
                         </div>
                         <span style={{ color: '#00b894', fontSize: 13 }}>{course.completedMentees} / {course.mentees} mentees completed</span>
                       </div>
-                      <button style={{ marginTop: 6, background: 'linear-gradient(90deg, #00b894 60%, #646cff 100%)', color: '#fff', border: 'none', borderRadius: 6, padding: '4px 14px', fontSize: 14, fontWeight: 600, cursor: 'pointer', boxShadow: '0 1px 4px rgba(0,184,148,0.2)', transition: 'background 0.2s' }} onClick={() => alert(`View details for: ${course.title}`)}>View Details</button>
+                      <button style={{ marginTop: 6, background: 'linear-gradient(90deg, #00b894 60%, #646cff 100%)', color: '#fff', border: 'none', borderRadius: 6, padding: '4px 14px', fontSize: 14, fontWeight: 600, cursor: 'pointer', boxShadow: '0 1px 4px rgba(0,184,148,0.2)', transition: 'background 0.2s' }} onClick={() => handleViewCourseDetails(course)}>View Details</button>
                     </div>
                   );
                 })}
@@ -220,7 +342,7 @@ const MentorDashboard = () => {
               </div>
             </div>
 
-            {/* Recommended Resources Section (Kept for Dashboard Overview) */}
+            {/* Recommended Resources Section (Dashboard Quick Links) */}
             <div style={{ background: '#fff', borderRadius: 16, boxShadow: '0 2px 12px rgba(0,184,148,0.1)', padding: '1.5rem 1.2rem', marginBottom: 12 }}>
               <h2 style={{ color: '#00b894', fontWeight: 800, fontSize: isMobile ? '1.1rem' : '1.13rem', marginBottom: 12, letterSpacing: 1 }}>Recommended Resources (Dashboard Quick Links)</h2>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 18, justifyContent: 'center', marginBottom: 0 }}>
@@ -250,7 +372,12 @@ const MentorDashboard = () => {
                   >
                     <span style={{ marginBottom: 8 }}>{resource.icon}</span>
                     <div style={{ color: '#222', fontWeight: 700, fontSize: 15, textAlign: 'center' }}>{resource.title}</div>
-                    <button style={{ marginTop: 8, background: 'linear-gradient(90deg, #00b894 60%, #646cff 100%)', color: '#fff', border: 'none', borderRadius: 6, padding: '3px 12px', fontSize: 13, fontWeight: 600, cursor: 'pointer', boxShadow: '0 1px 4px rgba(0,184,148,0.2)', transition: 'background 0.2s' }} onClick={() => alert(`Access resource: ${resource.title}`)}>Access Resource</button>
+                    <button
+                      style={{ marginTop: 8, background: 'linear-gradient(90deg, #00b894 60%, #646cff 100%)', color: '#fff', border: 'none', borderRadius: 6, padding: '3px 12px', fontSize: 13, fontWeight: 600, cursor: 'pointer', boxShadow: '0 1px 4px rgba(0,184,148,0.2)', transition: 'background 0.2s' }}
+                      onClick={() => handleShowResourceDetails(resource)}
+                    >
+                      Access Resource
+                    </button>
                   </div>
                 ))}
               </div>
@@ -319,7 +446,14 @@ const MentorDashboard = () => {
               icon={link.icon}
               label={link.label}
               active={activeContent === link.label}
-              onClick={() => setActiveContent(link.label)}
+              onClick={() => {
+                if (link.label === 'Dashboard') {
+                  handleBackToDashboard(); // Ensures Dashboard view resets selected course
+                } else {
+                  setActiveContent(link.label);
+                  setSelectedCourseForDetails(null); // Clear selected course when switching sidebar view
+                }
+              }}
               isMobile={isMobile}
             />
           ))}
@@ -350,30 +484,79 @@ const MentorDashboard = () => {
           {renderContent()}
         </div>
       </div>
+
+      {/* Inline Resource Details Pop-up */}
+      {showResourceDetails && currentResourceDetails && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.6)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 1000,
+        }} onClick={handleCloseResourceDetails}>
+          <div style={{
+            background: '#fff',
+            padding: '30px',
+            borderRadius: '15px',
+            maxWidth: '600px',
+            width: '90%',
+            boxShadow: '0 8px 30px rgba(0,0,0,0.3)',
+            position: 'relative',
+            maxHeight: '80vh',
+            overflowY: 'auto',
+          }} onClick={(e) => e.stopPropagation()}> {/* Prevent clicks inside from closing */}
+            <button
+              style={{
+                position: 'absolute',
+                top: '15px',
+                right: '15px',
+                background: 'none',
+                border: 'none',
+                fontSize: '1.5rem',
+                cursor: 'pointer',
+                color: '#333',
+                padding: '5px',
+              }}
+              onClick={handleCloseResourceDetails}
+            >
+              &times;
+            </button>
+            <h3 style={{ color: '#00b894', marginBottom: '15px', fontSize: '1.4rem' }}>{currentResourceDetails.title}</h3>
+            <p style={{ color: '#555', lineHeight: '1.7', fontSize: '1rem' }}>{currentResourceDetails.content}</p>
+            {currentResourceDetails.link && (
+              <a
+                href={currentResourceDetails.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: 'inline-block',
+                  marginTop: '20px',
+                  background: 'linear-gradient(90deg, #00b894 60%, #646cff 100%)',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: 6,
+                  padding: '8px 18px',
+                  fontSize: 14,
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  textDecoration: 'none',
+                  boxShadow: '0 1px 4px rgba(0,184,148,0.2)',
+                  transition: 'background 0.2s',
+                }}
+              >
+                Go to Resource
+              </a>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
-
-// Sidebar link component
-function SidebarLink({ icon, label, active, onClick, isMobile }) {
-  return (
-    <div
-      style={{
-        display: 'flex', alignItems: 'center', gap: 12, padding: isMobile ? '0.5rem 0.8rem' : '0.7rem 1rem', borderRadius: 8,
-        background: active ? '#fff' : 'none', color: active ? '#00b894' : '#fff', fontWeight: 700,
-        fontSize: isMobile ? 14 : 16,
-        marginBottom: isMobile ? 4 : 8, cursor: 'pointer',
-        boxShadow: active ? '0 2px 8px rgba(255,255,255,0.1)' : 'none',
-        transition: 'background 0.2s, color 0.2s, transform 0.1s',
-        flexGrow: isMobile ? 1 : 0,
-        justifyContent: isMobile ? 'center' : 'flex-start',
-        whiteSpace: 'nowrap',
-      }}
-      onClick={onClick}
-    >
-      {icon} {!isMobile && label}
-    </div>
-  );
-}
 
 export default MentorDashboard;
