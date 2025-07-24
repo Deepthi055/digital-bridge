@@ -20,6 +20,8 @@ import {
   FaTachometerAlt
 } from 'react-icons/fa';
 import CertificatePage from '../CertificatePage';
+import AnalyticsPage from '../AnalyticsPage';
+import SettingsPage from '../SettingsPage';
 
 const AdminPanel = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -75,6 +77,45 @@ const AdminPanel = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [statusFilter, setStatusFilter] = useState('All');
   const [roleFilter, setRoleFilter] = useState('All');
+
+  // Settings state
+  const [settings, setSettings] = useState({
+    general: {
+      siteName: 'Digital Bridge',
+      siteDescription: 'Empowering learners through digital education',
+      contactEmail: 'admin@digitalbridge.com',
+      supportEmail: 'support@digitalbridge.com',
+      maintenanceMode: false,
+      allowRegistration: true,
+      requireEmailVerification: true
+    },
+    notifications: {
+      emailNotifications: true,
+      pushNotifications: false,
+      smsNotifications: false,
+      notifyOnNewUser: true,
+      notifyOnNewCourse: true,
+      notifyOnCertificate: true
+    },
+    security: {
+      passwordMinLength: 8,
+      requireUppercase: true,
+      requireNumbers: true,
+      requireSpecialChars: true,
+      sessionTimeout: 30,
+      maxLoginAttempts: 5,
+      twoFactorAuth: false
+    },
+    features: {
+      enableCertificates: true,
+      enableMentorSystem: true,
+      enableAnalytics: true,
+      enableForums: false,
+      enableLiveChat: true,
+      enableFileSharing: true
+    }
+  });
+  const [settingsChanged, setSettingsChanged] = useState(false);
 
   // Sidebar links data
   const sidebarLinks = [
@@ -1893,41 +1934,11 @@ const AdminPanel = () => {
   );
 
   const renderAnalytics = () => (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <h2 style={{ fontSize: '2rem', fontWeight: 800, color: '#2d3436', margin: 0 }}>
-          Analytics & Reports
-        </h2>
-        <button style={buttonStyle}>
-          <FaDownload /> Generate Report
-        </button>
-      </div>
-      
-      <div style={cardStyle}>
-        <p style={{ color: '#636e72', fontSize: '1.1rem', textAlign: 'center', padding: '2rem' }}>
-          Advanced analytics dashboard coming soon...
-        </p>
-      </div>
-    </div>
+    <AnalyticsPage />
   );
 
   const renderSettings = () => (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <h2 style={{ fontSize: '2rem', fontWeight: 800, color: '#2d3436', margin: 0 }}>
-          System Settings
-        </h2>
-        <button style={buttonStyle}>
-          <FaCog /> Configure
-        </button>
-      </div>
-      
-      <div style={cardStyle}>
-        <p style={{ color: '#636e72', fontSize: '1.1rem', textAlign: 'center', padding: '2rem' }}>
-          System configuration interface coming soon...
-        </p>
-      </div>
-    </div>
+    <SettingsPage />
   );
 
   return (
